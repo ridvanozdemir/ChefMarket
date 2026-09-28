@@ -1,6 +1,6 @@
 {
-  "appId": "com.chefmarket.app",
-  "appName": "ChefMarket",
+  "appId": "com.ridvanozdemir.whoisthechef",
+  "appName": "Who Is the Chef?",
   "webDir": "out",
   "bundledWebRuntime": false
 }
