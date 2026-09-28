@@ -1,6 +1,15 @@
 "use client";
 import { useState } from "react";
 
+const aisles=[
+{id:"produce",icon:"🥕",name:"Manav",products:["Soğan","Havuç","Domates","Biber","Patlıcan","Limon","Sarımsak","Maydanoz","Patates","Salatalık"]},
+{id:"meat",icon:"🥩",name:"Kasap",products:["Kıyma"]},
+{id:"dairy",icon:"🥛",name:"Süt & Kahvaltı",products:["Süt","Yoğurt","Tereyağı","Yumurta","Kaşar"]},
+{id:"pantry",icon:"🌾",name:"Bakliyat & Tahıl",products:["Kırmızı mercimek","Bulgur","Pirinç","Kuru fasulye","İrmik","Un","Nişasta","Makarna"]},
+{id:"grocery",icon:"🫙",name:"Temel Gıda",products:["Şeker","Tuz","Domates salçası","Vanilya","Nane","Çam fıstığı","Zeytin"]},
+{id:"other",icon:"🧺",name:"Diğer",products:["Krema","Mantar","Su"]}
+];
+
 const cuisines=[
 {id:"tr",flag:"🇹🇷",title:"Türk Mutfağı",text:"Çorba, ana yemek ve tatlılarla sofrayı tamamla.",color:"red"},
 {id:"it",flag:"🇮🇹",title:"İtalyan Mutfağı",text:"Yakında açılacak.",color:"green",locked:true},
@@ -30,11 +39,13 @@ dessert:[
 const marketExtras=["Makarna","Mantar","Kaşar","Patates","Maydanoz","Salatalık","Zeytin","Krema"];
 
 export default function Home(){
- const [selected,setSelected]=useState(null),[category,setCategory]=useState(null),[dish,setDish]=useState(null),[basket,setBasket]=useState([]);
+ const [selected,setSelected]=useState(null),[category,setCategory]=useState(null),[dish,setDish]=useState(null),[basket,setBasket]=useState([]),[aisle,setAisle]=useState(null);
  const cuisine=cuisines.find(c=>c.id===selected),chosen=dish&&dishes[category].find(d=>d.id===dish);
- const market=chosen?[...chosen.ingredients,...marketExtras].sort((a,b)=>a.localeCompare(b,"tr")):[];
+ const market=chosen?[...new Set([...chosen.ingredients,...marketExtras])]:[];
+ const activeAisle=aisles.find(a=>a.id===aisle);
+ const aisleProducts=activeAisle?activeAisle.products.filter(i=>market.includes(i)):[];
  const toggle=i=>setBasket(b=>b.includes(i)?b.filter(x=>x!==i):[...b,i]);
- const resetBack=()=>{if(dish){setDish(null);setBasket([])}else if(category)setCategory(null);else setSelected(null)};
+ const resetBack=()=>{if(aisle){setAisle(null)}else if(dish){setDish(null);setBasket([])}else if(category)setCategory(null);else setSelected(null)};
  const correct=chosen&&chosen.ingredients.every(i=>basket.includes(i))&&basket.every(i=>chosen.ingredients.includes(i));
  return <main>
  <header className="topbar"><div className="brand"><span>👨‍🍳</span> ChefMarket</div><div className="badge">⭐ {basket.length*10} puan</div></header>
@@ -44,8 +55,8 @@ export default function Home(){
  :!dish?<><button className="back" onClick={resetBack}>← Kategorilere dön</button><div className="eyebrow">{categories.find(c=>c.id===category).icon} {categories.find(c=>c.id===category).title.toUpperCase()}</div><h1>Tarifini <em>seç.</em></h1><p>Her tarifin market listesi farklı. Birini seç ve alışverişe başla.</p><div className="cards">{dishes[category].map(d=><button key={d.id} className="cuisine dish" onClick={()=>setDish(d.id)}><div className="food">{d.emoji}</div><h2>{d.name}</h2><p>⏱ {d.time} · 🎯 {d.difficulty}</p><span>Markete git →</span></button>)}</div></>
  :<><button className="back" onClick={resetBack}>← Yemeklere dön</button><div className="eyebrow">🛒 CHEFMARKET</div><h1><em>{chosen.name}</em> için alışveriş</h1><p>Tarifi ezberle: gerekli olduğunu düşündüğün ürünleri sepete ekle. Fazladan ürün alma!</p>
  <div className="game"><aside className="recipe"><div className="bigfood">{chosen.emoji}</div><h2>{chosen.name}</h2><p>Gerekli malzeme: <b>{chosen.ingredients.length}</b></p><div className="hint">💡 İpucu: Sepette tam {chosen.ingredients.length} ürün olmalı.</div></aside>
- <div className="market"><h2>Market Rafları</h2><div className="shelf">{market.map(i=><button key={i} onClick={()=>toggle(i)} className={basket.includes(i)?"product selected":"product"}><span>{basket.includes(i)?"✓":"+"}</span>{i}</button>)}</div>
- <div className="basket">🛒 Sepet: <b>{basket.length}/{chosen.ingredients.length}</b></div>
+ <div className="market">{!aisle?<><h2>🏪 Hangi reyona gideceksin?</h2><p className="marketnote">Aradığın malzemenin hangi reyonda olduğunu sen bulmalısın.</p><div className="aisles">{aisles.map(a=><button className="aisle" key={a.id} onClick={()=>setAisle(a.id)}><b>{a.icon}</b><span>{a.name}</span><small>Reyona gir →</small></button>)}</div></>:<><button className="aisleback" onClick={()=>setAisle(null)}>← Reyonlara dön</button><h2>{activeAisle.icon} {activeAisle.name}</h2><div className="shelf">{aisleProducts.length?aisleProducts.map(i=><button key={i} draggable onDragStart={e=>e.dataTransfer.setData("text/plain",i)} onClick={()=>toggle(i)} className={basket.includes(i)?"product selected":"product"}><span>{basket.includes(i)?"✓":"+"}</span>{i}<small>Sürükle veya dokun</small></button>):<div className="empty">Bu rafta şu an aradığın ürünlerden yok.</div>}</div></>}
+ <div className="basket dropbasket" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();const i=e.dataTransfer.getData("text/plain");if(i&&!basket.includes(i))setBasket(b=>[...b,i])}}>🛒 Sepet: <b>{basket.length}/{chosen.ingredients.length}</b><small> Ürünü buraya sürükleyebilirsin</small></div>
  {basket.length>=chosen.ingredients.length&&<div className={correct?"result good":"result bad"}>{correct?"🎉 Harika! Tüm malzemeler doğru. +100 puan":"🤔 Sepette eksik veya gereksiz bir ürün var. Tekrar dene!"}</div>}
  </div></div></>}
  </section><footer><span>🥕 Seç</span><span>🛒 Alışveriş yap</span><span>🍳 Pişir</span><span>⭐ Puan kazan</span></footer></main>
