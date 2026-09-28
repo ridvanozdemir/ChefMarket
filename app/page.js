@@ -32,6 +32,8 @@ export default function Home(){
  const [touchStartX,setTouchStartX]=useState(null);
  const [showSplash,setShowSplash]=useState(true);
  const [soundEnabled,setSoundEnabled]=useState(true);
+ const [basketOpen,setBasketOpen]=useState(false);
+ const [introSeconds,setIntroSeconds]=useState(5);
 
  const cuisine=cuisines.find(c=>c.id===selected);
  const chosen=dish&&dishes[category].find(d=>d.id===dish);
@@ -69,6 +71,17 @@ export default function Home(){
  },[]);
 
  useEffect(()=>{
+  if(stage!=="marketIntro")return;
+  setIntroSeconds(5);
+  const tick=setInterval(()=>setIntroSeconds(v=>Math.max(0,v-1)),1000);
+  const timer=setTimeout(()=>{
+   setAisle(aisles[0].id);
+   setStage("market");
+  },5000);
+  return ()=>{clearInterval(tick);clearTimeout(timer)};
+ },[stage]);
+
+ useEffect(()=>{
   let timer;
   if(stage==="marketSuccess")timer=setTimeout(()=>setStage("ready"),1700);
   if(stage==="marketFail")timer=setTimeout(()=>setStage("market"),1700);
@@ -99,6 +112,8 @@ export default function Home(){
     success:[[523,0],[659,.09],[784,.18]],
     fail:[[240,0],[180,.12]],
     joker:[[740,0],[988,.08],[1174,.16]],
+    select:[[440,0],[660,.08],[880,.16]],
+    door:[[220,0],[330,.09],[440,.18],[660,.28]],
     tap:[[500,0]]
    };
    (patterns[type]||patterns.tap).forEach(([freq,delay])=>{
@@ -123,10 +138,12 @@ export default function Home(){
  });
 
  const chooseDish=id=>{
-  setDish(id);setBasket([]);setAisle(null);setStage("marketEntry");setShoppingScore(null);setQuizIndex(0);setQuizAnswers([]);setMarketMessage("");setJokerUsed(false);setJokerItem(null);setTouchStartX(null);
+  playSound("select");
+  setDish(id);setBasket([]);setBasketOpen(false);setAisle(null);setStage("marketEntry");setShoppingScore(null);setQuizIndex(0);setQuizAnswers([]);setMarketMessage("");setJokerUsed(false);setJokerItem(null);
  };
 
  const resetBack=()=>{
+  if(stage==="marketIntro"){setStage("marketEntry");setAisle(null);return}
   if(["quiz","ready","marketSuccess","marketFail","quizResult","final"].includes(stage)){setStage("market");setQuizIndex(0);setQuizAnswers([]);return}
   if(dish){setDish(null);setBasket([]);setAisle(null);setShoppingScore(null);setMarketMessage("");setJokerUsed(false);setJokerItem(null);return}
   if(category){setCategory(null);return}
@@ -176,15 +193,6 @@ export default function Home(){
   setAisle(aisles[next].id);
  };
 
- const handleTouchStart=e=>setTouchStartX(e.touches[0]?.clientX??null);
- const handleTouchEnd=e=>{
-  if(touchStartX===null)return;
-  const endX=e.changedTouches[0]?.clientX??touchStartX;
-  const delta=endX-touchStartX;
-  if(Math.abs(delta)>55)changeAisle(delta<0?1:-1);
-  setTouchStartX(null);
- };
-
  const questionShift=chosen?((quizIndex+chosen.id.length)%3):0;
  const shownOptions=questions[quizIndex]?questions[quizIndex].o.map((_,i)=>questions[quizIndex].o[(i+questionShift)%3]):[];
  const shownCorrectIndex=questions[quizIndex]?((questions[quizIndex].a-questionShift+3)%3):0;
@@ -206,7 +214,7 @@ export default function Home(){
  if(showSplash)return <div className="splashScreen"><img src="/splash-screen.svg" alt="Who Is the Chef?"/></div>;
 
  return <main>
- <header className="topbar"><div className="brand"><img src="/app-icon.svg" alt=""/><span>Who Is the Chef?</span></div><div className="topActions"><button className="soundToggle" onClick={()=>setSoundEnabled(v=>!v)} aria-label="Sesi aç veya kapat">{soundEnabled?"🔊":"🔇"}</button><div className="badge">{["marketEntry","market","marketSuccess","marketFail"].includes(stage)?"🛒 Alışveriş":["ready","quiz"].includes(stage)?"🍳 Pişirme":"🏆 Sonuç"}</div></div></header>
+ <header className="topbar"><div className="brand"><img src="/app-icon.svg" alt=""/><span>Who Is the Chef?</span></div><div className="topActions"><button className="soundToggle" onClick={()=>setSoundEnabled(v=>!v)} aria-label="Sesi aç veya kapat">{soundEnabled?"🔊":"🔇"}</button><div className="badge">{["marketEntry","marketIntro","market","marketSuccess","marketFail"].includes(stage)?"🛒 Alışveriş":["ready","quiz"].includes(stage)?"🍳 Pişirme":"🏆 Sonuç"}</div></div></header>
  <section className="hero">
  {!selected?<><div className="eyebrow">MUTFAK MACERASI</div><h1>Bugün hangi mutfakta<br/><em>şef olacaksın?</em></h1><p>Doğru malzemeleri bul, alışveriş barajını geç ve ardından aşçılık bilgini kanıtla.</p><div className="cards">{cuisines.map(c=><button disabled={c.locked} key={c.id} className={"cuisine "+(c.locked?"locked":"")} onClick={()=>!c.locked&&setSelected(c.id)}><div className={"flag "+c.color}>{c.flag}</div><h2>{c.title}</h2><p>{c.text}</p><span>{c.locked?"🔒 Yakında":"Mutfağı seç →"}</span></button>)}</div></>
  :!category?<><button className="back" onClick={resetBack}>← Mutfaklara dön</button><div className="eyebrow">{cuisine.flag} TÜRK MUTFAĞI</div><h1>Şeflik <em>yolculuğun.</em></h1><p>Her yemeğin en iyi puanı kaydedilir. Yemekleri tamamladıkça kategori ustalığın ve Türk Mutfağı Şeflik Puanın oluşur.</p>
@@ -221,14 +229,25 @@ export default function Home(){
     <h1>Who Is the Chef?<br/><em>Marketi</em></h1>
     <p><b>{chosen.name}</b> için alışveriş zamanı!</p>
     <div className="entryClues"><span>🧺 {chosen.ingredients.length} ürün bul</span><span>🃏 1 jokerin var</span><span>🎯 Baraj %70</span></div>
-    <button className="marketEnterButton" onClick={()=>{playSound("success");setStage("market")}}>🚪 Market Girişi</button>
+    <button className="marketEnterButton" onClick={()=>{playSound("door");setStage("marketIntro")}}>🚪 Market Girişi</button>
     <small>Malzeme listesi yok — mutfak bilgine güven!</small>
    </div>
   </div>
+ :stage==="marketIntro"?<div className="marketIntroScreen">
+   <div className="introDoor">🚪</div>
+   <div className="eyebrow">MARKETE GİRİYORSUN</div>
+   <h1>Alışveriş <em>başlıyor!</em></h1>
+   <p><b>{chosen.name}</b> için {chosen.ingredients.length} ürün bul. Ürünleri seçtikçe sepetinden kontrol edebilirsin.</p>
+   <div className="introRules"><span>1️⃣ Reyonları yan oklarla değiştir</span><span>2️⃣ Ürüne dokun, sepete ekle</span><span>3️⃣ Emin değilsen jokerini kullan</span></div>
+   <div className="introCountdown"><b>{introSeconds}</b><span>saniye sonra ilk reyona geçiyorsun</span></div>
+  </div>
  :stage==="market"?<><button className="back" onClick={resetBack}>← Yemeklere dön</button><div className="eyebrow">1. ETAP · 🛒 ALIŞVERİŞ</div><h1><em>{chosen.name}</em> için alışveriş</h1><p>Malzeme listesi yok. Bu yemeğin gerektirdiğini düşündüğün ürünleri doğru reyonlardan bulup sepete ekle. Gereksiz ürünler puanını düşürür.</p>
- <div className="game"><aside className="recipe"><div className="bigfood">{chosen.emoji}</div><h2>{chosen.name}</h2><p>Bilgine güven ve alışverişini tamamla.</p><div className="itemCountHint">🧺 Bu yemek için toplam <b>{chosen.ingredients.length} ürün</b> almalısın.</div><div className="hint neutral">🎯 Pişirme etabına geçiş barajı: <b>%70</b></div><button className={"jokerButton "+(jokerUsed?"used":"")} onClick={useJoker} disabled={jokerUsed}>{jokerUsed?"🃏 Joker kullanıldı":"🃏 1 Joker Kullan"}</button>{jokerItem&&<div className="jokerReveal">Gösterilen ürün: <b>{jokerItem}</b><small>Skorda yarım doğru sayılır.</small></div>}<div className="scoreformula">Doğru seçimler puanı yükseltir.<br/>Gereksiz ürünler puanı düşürür.</div></aside>
- <div className="market">{!aisle?<><div className="maphead"><div><h2>🏪 Who Is the Chef? Marketi</h2><p className="marketnote">İlk reyonunu seç. İçeri girdikten sonra reyonlar arasında sağa/sola kaydırarak dolaşacaksın.</p></div><div className="maptotal">🛒 {basket.length}/{chosen.ingredients.length} ürün · <b>₺{total}</b></div></div><div className="storemap"><div className="entrance">🚪 GİRİŞ<br/><small>Buradasın 👨‍🍳</small></div><div className="mapgrid">{aisles.map((a,n)=><button className={"mapaisle map"+n} key={a.id} onClick={()=>setAisle(a.id)}><b>{a.icon}</b><span>{a.name}</span><small>Reyona gir</small></button>)}</div><div className="checkout">🧾 KASA <span>Sepet ₺{total}</span></div></div></>:<div className="aisleView" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}><div className="aisleNav"><button onClick={()=>changeAisle(-1)} aria-label="Önceki reyon">‹</button><div><h2>{activeAisle.icon} {activeAisle.name}</h2><span>{activeAisleIndex+1}/{aisles.length} reyon</span></div><button onClick={()=>changeAisle(1)} aria-label="Sonraki reyon">›</button></div><p className="swipeHint">← Sağa / sola kaydırarak diğer reyona geç →</p><p className="marketnote">Bu reyondan gerekli olduğunu düşündüğün ürünleri seç.</p><div className={"shelf shelf-"+activeAisle.id}><div className="shelfTop"><span>✨ {activeAisle.name} Rafı</span><small>İhtiyacın olanları seç</small></div>{aisleProducts.map(i=><button key={i} draggable onDragStart={e=>e.dataTransfer.setData("text/plain",i)} onClick={()=>toggle(i)} className={basket.includes(i)?"product selected":"product"}><span className="pickMark">{basket.includes(i)?"✓":"+"}</span><div className="productIcon" aria-hidden="true">{productIcons[i]||"🛍️"}</div><strong>{i}</strong><em>≈ ₺{prices[i]||0}</em><small>{basket.includes(i)?"Sepette ✓":"Sepete ekle"}</small></button>)}</div></div>}
- <div className="basket dropbasket" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();const i=e.dataTransfer.getData("text/plain");if(i&&!basket.includes(i))setBasket(b=>[...b,i])}}><div>🛒 Sepet: <b>{basket.length}/{chosen.ingredients.length} ürün</b></div><div className="basketprice">Yaklaşık toplam <b>₺{total}</b></div><small>Fiyatlar oyun içi yaklaşık değerlerdir.</small></div>
+ <div className={"game "+(aisle?"gameAisle":"")}><aside className="recipe"><div className="bigfood">{chosen.emoji}</div><h2>{chosen.name}</h2><p>Bilgine güven ve alışverişini tamamla.</p><div className="itemCountHint">🧺 Bu yemek için toplam <b>{chosen.ingredients.length} ürün</b> almalısın.</div><div className="hint neutral">🎯 Pişirme etabına geçiş barajı: <b>%70</b></div><button className={"jokerButton "+(jokerUsed?"used":"")} onClick={useJoker} disabled={jokerUsed}>{jokerUsed?"🃏 Joker kullanıldı":"🃏 1 Joker Kullan"}</button>{jokerItem&&<div className="jokerReveal">Gösterilen ürün: <b>{jokerItem}</b><small>Skorda yarım doğru sayılır.</small></div>}<div className="scoreformula">Doğru seçimler puanı yükseltir.<br/>Gereksiz ürünler puanı düşürür.</div></aside>
+ <div className={"market "+(aisle?"marketInAisle":"")}>{!aisle?<><div className="maphead"><div><h2>🏪 Who Is the Chef? Marketi</h2><p className="marketnote">İlk reyonunu seç. İçeri girdikten sonra reyonlar arasında sağa/sola kaydırarak dolaşacaksın.</p></div><div className="maptotal">🛒 {basket.length}/{chosen.ingredients.length} ürün · <b>₺{total}</b></div></div><div className="storemap"><div className="entrance">🚪 GİRİŞ<br/><small>Buradasın 👨‍🍳</small></div><div className="mapgrid">{aisles.map((a,n)=><button className={"mapaisle map"+n} key={a.id} onClick={()=>setAisle(a.id)}><b>{a.icon}</b><span>{a.name}</span><small>Reyona gir</small></button>)}</div><div className="checkout">🧾 KASA <span>Sepet ₺{total}</span></div></div></>:<div className="aisleView"><button className="aisleEdge aisleEdgeLeft" onClick={()=>changeAisle(-1)} aria-label="Önceki reyon">‹</button><button className="aisleEdge aisleEdgeRight" onClick={()=>changeAisle(1)} aria-label="Sonraki reyon">›</button><div className="aisleSticky"><div className="aisleNav"><button onClick={()=>changeAisle(-1)} aria-label="Önceki reyon">‹</button><div><h2>{activeAisle.icon} {activeAisle.name}</h2><span>{activeAisleIndex+1}/{aisles.length} reyon</span></div><button onClick={()=>changeAisle(1)} aria-label="Sonraki reyon">›</button></div><p className="swipeHint">Yanlardaki oklarla diğer reyona geçebilirsin</p><p className="marketnote">Bu reyondan gerekli olduğunu düşündüğün ürünleri seç.</p></div><div className="shelfScroll"><div className={"shelf shelf-"+activeAisle.id}><div className="shelfTop"><span>✨ {activeAisle.name} Rafı</span><small>İhtiyacın olanları seç</small></div>{aisleProducts.map(i=><button key={i} draggable onDragStart={e=>e.dataTransfer.setData("text/plain",i)} onClick={()=>toggle(i)} className={basket.includes(i)?"product selected":"product"}><span className="pickMark">{basket.includes(i)?"✓":"+"}</span><div className="productIcon" aria-hidden="true">{String(productIcons[i]||"").startsWith("/")?<img src={productIcons[i]} alt=""/>:(productIcons[i]||"🛍️")}</div><strong>{i}</strong><em>≈ ₺{prices[i]||0}</em><small>{basket.includes(i)?"Sepette ✓":"Sepete ekle"}</small></button>)}</div></div></div>}
+ <div className={"basketDock "+(basketOpen?"open":"")} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();const i=e.dataTransfer.getData("text/plain");if(i&&!basket.includes(i)){playSound("add");setBasket(b=>[...b,i])}}}>
+  <button className="basketDockHead" onClick={()=>setBasketOpen(v=>!v)}><span>🛒 <b>Sepetim</b> · {basket.length}/{chosen.ingredients.length}</span><strong>₺{total}</strong><i>{basketOpen?"⌄":"⌃"}</i></button>
+  {basketOpen&&<div className="basketDrawer">{basket.length===0?<div className="basketEmpty">Henüz ürün seçmedin.</div>:basket.map(i=><div className="basketItem" key={i}><div className="basketItemIcon">{String(productIcons[i]||"").startsWith("/")?<img src={productIcons[i]} alt=""/>:(productIcons[i]||"🛍️")}</div><div><b>{i}</b><small>≈ ₺{prices[i]||0}</small></div><button onClick={()=>toggle(i)} aria-label={i+" ürününü çıkar"}>×</button></div>)}</div>}
+ </div>
  <button className="primaryAction" onClick={finishShopping}>Alışverişi tamamla ve kasaya git →</button>
  {marketMessage&&<div className="result bad">{marketMessage}<button className="retry" onClick={retryShopping}>Sepeti boşaltıp tekrar dene</button></div>}
  </div></div></>
