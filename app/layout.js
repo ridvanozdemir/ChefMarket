@@ -1,9 +1,14 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "ChefMarket",
-  description: "Mutfağını seç, tarifini tamamla, marketten doğru malzemeleri topla.",
+  title: "Who Is the Chef?",
+  description: "Doğru malzemeleri bul, alışverişi tamamla ve aşçılık bilgini test et.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/app-icon.svg",
+    apple: "/app-icon.svg",
+  },
+  themeColor: "#ff8a3d",
 };
 
 export default function RootLayout({ children }) {
