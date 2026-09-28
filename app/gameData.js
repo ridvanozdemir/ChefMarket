@@ -244,6 +244,17 @@ q("Şerbet sonrası ne yapılır?","Tatlı şerbeti çekene kadar dinlendirilir"
 
 export const quizBank=Object.fromEntries(Object.values(dishes).flat().map(d=>[d.id,d.quiz]));
 
+
+export const productIcons={
+"Soğan":"🧅","Havuç":"🥕","Domates":"🍅","Biber":"🫑","Patlıcan":"🍆","Limon":"🍋","Sarımsak":"🧄","Maydanoz":"🌿","Patates":"🥔","Salatalık":"🥒","Kabak":"🥒","Kereviz":"🌱","Pırasa":"🥬",
+"Kıyma":"🥩","Dana kuşbaşı":"🥩","Tavuk":"🍗","Dana işkembe":"🥩","Kuzu eti":"🍖",
+"Süt":"🥛","Yoğurt":"🥣","Tereyağı":"🧈","Yumurta":"🥚","Kaşar":"🧀","Beyaz peynir":"🧀",
+"Kırmızı mercimek":"🫘","Bulgur":"🌾","Pirinç":"🍚","Kuru fasulye":"🫘","Nohut":"🫘","İrmik":"🌾","Un":"🌾","Nişasta":"🥣","Makarna":"🍝","Arpa şehriye":"🍜","Tel şehriye":"🍜","Buğday":"🌾","Tarhana":"🥣",
+"Şeker":"🍬","Tuz":"🧂","Domates salçası":"🥫","Biber salçası":"🥫","Vanilya":"🌼","Nane":"🌿","Karabiber":"⚫","Pul biber":"🌶️","Tarçın":"🪵","Çam fıstığı":"🌰","Antep fıstığı":"🥜","Fındık":"🌰","Ceviz":"🌰","Kuş üzümü":"🍇","Zeytin":"🫒","Sıvı yağ":"🫗","Zeytinyağı":"🫒",
+"Baklavalık yufka":"🫓","Güllaç yaprağı":"🫓","Ekmek":"🍞",
+"Krema":"🥛","Mantar":"🍄","Su":"💧","Asma yaprağı":"🍃","Gül suyu":"🌹","Maya":"🧫"
+};
+
 export const prices={
 "Soğan":12,"Havuç":14,"Domates":22,"Biber":24,"Patlıcan":28,"Limon":10,"Sarımsak":18,"Maydanoz":9,"Patates":18,"Salatalık":16,"Kabak":18,"Kereviz":28,"Pırasa":22,
 "Kıyma":185,"Dana kuşbaşı":210,"Tavuk":105,"Dana işkembe":140,"Kuzu eti":230,
