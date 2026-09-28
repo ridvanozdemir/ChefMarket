@@ -16,10 +16,14 @@ export default function Home(){
  const [marketMessage,setMarketMessage]=useState("");
  const [progress,setProgress]=useState({});
  const [progressReady,setProgressReady]=useState(false);
+ const [jokerUsed,setJokerUsed]=useState(false);
+ const [jokerItem,setJokerItem]=useState(null);
+ const [touchStartX,setTouchStartX]=useState(null);
 
  const cuisine=cuisines.find(c=>c.id===selected);
  const chosen=dish&&dishes[category].find(d=>d.id===dish);
  const activeAisle=aisles.find(a=>a.id===aisle);
+ const activeAisleIndex=aisles.findIndex(a=>a.id===aisle);
  const aisleProducts=activeAisle?activeAisle.products:[];
  const total=basket.reduce((sum,i)=>sum+(prices[i]||0),0);
  const questions=chosen?quizBank[chosen.id]||[]:[];
@@ -56,13 +60,12 @@ export default function Home(){
  const toggle=i=>setBasket(b=>b.includes(i)?b.filter(x=>x!==i):[...b,i]);
 
  const chooseDish=id=>{
-  setDish(id);setBasket([]);setAisle(null);setStage("market");setShoppingScore(null);setQuizIndex(0);setQuizAnswers([]);setMarketMessage("");
+  setDish(id);setBasket([]);setAisle(null);setStage("market");setShoppingScore(null);setQuizIndex(0);setQuizAnswers([]);setMarketMessage("");setJokerUsed(false);setJokerItem(null);setTouchStartX(null);
  };
 
  const resetBack=()=>{
   if(stage==="quiz"||stage==="final"){setStage("market");setQuizIndex(0);setQuizAnswers([]);return}
-  if(aisle){setAisle(null);return}
-  if(dish){setDish(null);setBasket([]);setShoppingScore(null);setMarketMessage("");return}
+  if(dish){setDish(null);setBasket([]);setAisle(null);setShoppingScore(null);setMarketMessage("");setJokerUsed(false);setJokerItem(null);return}
   if(category){setCategory(null);return}
   setSelected(null);
  };
@@ -72,7 +75,9 @@ export default function Home(){
   const correctPicked=basket.filter(i=>chosen.ingredients.includes(i)).length;
   const wrongPicked=basket.filter(i=>!chosen.ingredients.includes(i)).length;
   const unionCount=chosen.ingredients.length+wrongPicked;
-  const score=Math.round((correctPicked/unionCount)*100);
+  const jokerHalfPoint=jokerItem&&basket.includes(jokerItem)?0.5:0;
+  const weightedCorrect=Math.max(0,correctPicked-jokerHalfPoint);
+  const score=Math.round((weightedCorrect/unionCount)*100);
   setShoppingScore(score);
   if(score>=70){
    setMarketMessage("");
@@ -83,7 +88,35 @@ export default function Home(){
   }
  };
 
- const retryShopping=()=>{setBasket([]);setAisle(null);setShoppingScore(null);setMarketMessage("")};
+ const retryShopping=()=>{setBasket([]);setShoppingScore(null);setMarketMessage("");setJokerUsed(false);setJokerItem(null)};
+
+ const useJoker=()=>{
+  if(jokerUsed||!chosen)return;
+  const missing=chosen.ingredients.filter(i=>!basket.includes(i));
+  if(!missing.length){setMarketMessage("Tüm doğru ürünleri zaten bulmuş görünüyorsun; jokerini sakla.");return}
+  const item=missing[0];
+  setJokerUsed(true);
+  setJokerItem(item);
+  setBasket(b=>b.includes(item)?b:[...b,item]);
+  const targetAisle=aisles.find(a=>a.products.includes(item));
+  if(targetAisle)setAisle(targetAisle.id);
+  setMarketMessage(`🃏 Joker sana bir doğru ürün verdi: ${item}. Bu ürün alışveriş skorunda yarım doğru sayılacak.`);
+ };
+
+ const changeAisle=dir=>{
+  if(activeAisleIndex<0)return;
+  const next=(activeAisleIndex+dir+aisles.length)%aisles.length;
+  setAisle(aisles[next].id);
+ };
+
+ const handleTouchStart=e=>setTouchStartX(e.touches[0]?.clientX??null);
+ const handleTouchEnd=e=>{
+  if(touchStartX===null)return;
+  const endX=e.changedTouches[0]?.clientX??touchStartX;
+  const delta=endX-touchStartX;
+  if(Math.abs(delta)>55)changeAisle(delta<0?1:-1);
+  setTouchStartX(null);
+ };
 
  const questionShift=chosen?((quizIndex+chosen.id.length)%3):0;
  const shownOptions=questions[quizIndex]?questions[quizIndex].o.map((_,i)=>questions[quizIndex].o[(i+questionShift)%3]):[];
@@ -108,9 +141,9 @@ export default function Home(){
  <div className="cards categories masteryCards">{categories.map(c=>{const st=categoryStats[c.id];return <button key={c.id} className="cuisine category" onClick={()=>setCategory(c.id)}><div className="food">{c.icon}</div><h2>{c.title} Ustalığı</h2><div className="categoryScore"><b>{st.score===null?"—":st.score}</b><span>{st.score===null?"Henüz puan yok":"/100"}</span></div><p>{st.completed}/{st.total} yemek tamamlandı</p><div className="miniProgress"><i style={{width:`${(st.completed/st.total)*100}%`}}/></div><span>{st.completed===st.total?"🏅 Ustalık tamamlandı":"Devam et →"}</span></button>})}</div></>
  :!dish?<><button className="back" onClick={resetBack}>← Kategorilere dön</button><div className="eyebrow">{categories.find(c=>c.id===category).icon} {categories.find(c=>c.id===category).title.toUpperCase()} USTALIĞI · {categoryStats[category].completed}/10</div><h1>Yemeğini <em>seç.</em></h1><p>Malzeme listesi verilmeyecek. Her yemeğin en iyi sonucu kategori ustalık puanına eklenir.</p><div className="cards">{dishes[category].map(d=>{const saved=progress[d.id];return <button key={d.id} className="cuisine dish" onClick={()=>chooseDish(d.id)}><div className="food">{d.emoji}</div><h2>{d.name}</h2><p>⏱ {d.time} · 🎯 {d.difficulty}</p>{saved&&<div className="dishBest">🏆 En iyi: <b>{saved.best}/100</b><small>{saved.attempts} deneme</small></div>}<span>{saved?"Puanını yükselt →":"Teste başla →"}</span></button>})}</div></>
  :stage==="market"?<><button className="back" onClick={resetBack}>← Yemeklere dön</button><div className="eyebrow">1. ETAP · 🛒 ALIŞVERİŞ</div><h1><em>{chosen.name}</em> için alışveriş</h1><p>Malzeme listesi yok. Bu yemeğin gerektirdiğini düşündüğün ürünleri doğru reyonlardan bulup sepete ekle. Gereksiz ürünler puanını düşürür.</p>
- <div className="game"><aside className="recipe"><div className="bigfood">{chosen.emoji}</div><h2>{chosen.name}</h2><p>Bilgine güven ve alışverişini tamamla.</p><div className="hint neutral">🎯 Pişirme etabına geçiş barajı: <b>%70</b></div><div className="scoreformula">Doğru seçimler puanı yükseltir.<br/>Gereksiz ürünler puanı düşürür.</div></aside>
- <div className="market">{!aisle?<><div className="maphead"><div><h2>🏪 ChefMarket Haritası</h2><p className="marketnote">Doğru reyonu kendin bul.</p></div><div className="maptotal">🛒 {basket.length} ürün · <b>₺{total}</b></div></div><div className="storemap"><div className="entrance">🚪 GİRİŞ<br/><small>Buradasın 👨‍🍳</small></div><div className="mapgrid">{aisles.map((a,n)=><button className={"mapaisle map"+n} key={a.id} onClick={()=>setAisle(a.id)}><b>{a.icon}</b><span>{a.name}</span><small>Reyona gir</small></button>)}</div><div className="checkout">🧾 KASA <span>Sepet ₺{total}</span></div></div></>:<><button className="aisleback" onClick={()=>setAisle(null)}>← Market haritasına dön</button><h2>{activeAisle.icon} {activeAisle.name}</h2><p className="marketnote">Bu reyondan gerekli olduğunu düşündüğün ürünleri seç.</p><div className="shelf">{aisleProducts.map(i=><button key={i} draggable onDragStart={e=>e.dataTransfer.setData("text/plain",i)} onClick={()=>toggle(i)} className={basket.includes(i)?"product selected":"product"}><span>{basket.includes(i)?"✓":"+"}</span><strong>{i}</strong><em>≈ ₺{prices[i]||0}</em><small>Sürükle veya dokun</small></button>)}</div></>}
- <div className="basket dropbasket" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();const i=e.dataTransfer.getData("text/plain");if(i&&!basket.includes(i))setBasket(b=>[...b,i])}}><div>🛒 Sepet: <b>{basket.length} ürün</b></div><div className="basketprice">Yaklaşık toplam <b>₺{total}</b></div><small>Fiyatlar oyun içi yaklaşık değerlerdir.</small></div>
+ <div className="game"><aside className="recipe"><div className="bigfood">{chosen.emoji}</div><h2>{chosen.name}</h2><p>Bilgine güven ve alışverişini tamamla.</p><div className="itemCountHint">🧺 Bu yemek için toplam <b>{chosen.ingredients.length} ürün</b> almalısın.</div><div className="hint neutral">🎯 Pişirme etabına geçiş barajı: <b>%70</b></div><button className={"jokerButton "+(jokerUsed?"used":"")} onClick={useJoker} disabled={jokerUsed}>{jokerUsed?"🃏 Joker kullanıldı":"🃏 1 Joker Kullan"}</button>{jokerItem&&<div className="jokerReveal">Gösterilen ürün: <b>{jokerItem}</b><small>Skorda yarım doğru sayılır.</small></div>}<div className="scoreformula">Doğru seçimler puanı yükseltir.<br/>Gereksiz ürünler puanı düşürür.</div></aside>
+ <div className="market">{!aisle?<><div className="maphead"><div><h2>🏪 ChefMarket Haritası</h2><p className="marketnote">İlk reyonunu seç. İçeri girdikten sonra reyonlar arasında sağa/sola kaydırarak dolaşacaksın.</p></div><div className="maptotal">🛒 {basket.length}/{chosen.ingredients.length} ürün · <b>₺{total}</b></div></div><div className="storemap"><div className="entrance">🚪 GİRİŞ<br/><small>Buradasın 👨‍🍳</small></div><div className="mapgrid">{aisles.map((a,n)=><button className={"mapaisle map"+n} key={a.id} onClick={()=>setAisle(a.id)}><b>{a.icon}</b><span>{a.name}</span><small>Reyona gir</small></button>)}</div><div className="checkout">🧾 KASA <span>Sepet ₺{total}</span></div></div></>:<div className="aisleView" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}><div className="aisleNav"><button onClick={()=>changeAisle(-1)} aria-label="Önceki reyon">‹</button><div><h2>{activeAisle.icon} {activeAisle.name}</h2><span>{activeAisleIndex+1}/{aisles.length} reyon</span></div><button onClick={()=>changeAisle(1)} aria-label="Sonraki reyon">›</button></div><p className="swipeHint">← Sağa / sola kaydırarak diğer reyona geç →</p><p className="marketnote">Bu reyondan gerekli olduğunu düşündüğün ürünleri seç.</p><div className="shelf">{aisleProducts.map(i=><button key={i} draggable onDragStart={e=>e.dataTransfer.setData("text/plain",i)} onClick={()=>toggle(i)} className={basket.includes(i)?"product selected":"product"}><span>{basket.includes(i)?"✓":"+"}</span><strong>{i}</strong><em>≈ ₺{prices[i]||0}</em><small>Sürükle veya dokun</small></button>)}</div></div>}
+ <div className="basket dropbasket" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();const i=e.dataTransfer.getData("text/plain");if(i&&!basket.includes(i))setBasket(b=>[...b,i])}}><div>🛒 Sepet: <b>{basket.length}/{chosen.ingredients.length} ürün</b></div><div className="basketprice">Yaklaşık toplam <b>₺{total}</b></div><small>Fiyatlar oyun içi yaklaşık değerlerdir.</small></div>
  <button className="primaryAction" onClick={finishShopping}>Alışverişi tamamla ve kasaya git →</button>
  {marketMessage&&<div className="result bad">{marketMessage}<button className="retry" onClick={retryShopping}>Sepeti boşaltıp tekrar dene</button></div>}
  </div></div></>
