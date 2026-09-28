@@ -5,3 +5,7 @@ android/
 .env*
 !.env.example
 .DS_Store
+
+# Signing keys - never commit
+*.jks
+*.keystore
