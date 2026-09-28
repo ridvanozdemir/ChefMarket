@@ -1,6 +1,8 @@
-# ChefMarket
+# Who Is the Chef?
 
-Mobil öncelikli yemek bilgisi ve market oyunu.
+Sevimli, mobil öncelikli yemek bilgisi ve market oyunu.
+
+**Android package:** `com.ridvanozdemir.whoisthechef`
 
 ## Türk Mutfağı
 - 10 çorba
@@ -9,8 +11,12 @@ Mobil öncelikli yemek bilgisi ve market oyunu.
 - Toplam 30 yemek ve 150 adet 3 şıklı pişirme sorusu
 - Kuşbakışı market ve reyon sistemi
 - Yaklaşık ürün fiyatları
+- Toplam ürün sayısı ipucu
+- Tek kullanımlık joker
+- Reyonlar arasında sağ/sol kaydırma
 - %70 alışveriş barajı
 - Yemek, kategori ve Türk Mutfağı ustalık puanları
+- Basit oyun sesleri ve ses aç/kapat kontrolü
 
 ## Web geliştirme
 ```bash
@@ -18,23 +24,23 @@ npm install
 npm run dev
 ```
 
-## Android / APK
-Proje Capacitor ile Android uygulamasına paketlenir.
+## Test APK
+GitHub Actions'taki **Build Android APK** workflow'u yalnızca manuel çalışır.
 
-GitHub Actions'ta **Build Android APK** iş akışı yalnızca manuel olarak çalışır. Bu özellikle GitHub Actions kotasını korumak için push ve pull request tetikleyicileri kapalı tutulmuştur.
+1. Actions > Build Android APK
+2. Run workflow
+3. Başarılı build sonunda `Who-Is-the-Chef-debug-...` artifact'ını indir
+4. ZIP içindeki `app-debug.apk` dosyasını Android telefona kur
 
-1. GitHub reposunda **Actions** sekmesine gir.
-2. **Build Android APK** iş akışını seç.
-3. **Run workflow** düğmesine bas.
-4. İş tamamlandığında **Artifacts** bölümündeki `ChefMarket-debug-...` paketini indir.
-5. ZIP içindeki `app-debug.apk` dosyasını Android telefona kur.
+## Play Store AAB
+**Build Play Store AAB** workflow'u imzalı release AAB üretir ve yalnızca manuel çalışır.
 
-Artifact saklama süresi gereksiz depolama kullanmamak için 3 gündür.
+Gerekli GitHub Actions secrets:
+- `ANDROID_KEYSTORE_BASE64`
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `ANDROID_KEY_PASSWORD`
 
-### Yerel Android hazırlığı
-```bash
-npm install
-npx cap add android
-npm run android:prepare
-npm run android:open
-```
+Her Play yüklemesinde `version_code` artırılmalıdır. İlk yükleme için 1 kullanılabilir.
+
+Signing key hiçbir zaman repoya commit edilmemelidir.
