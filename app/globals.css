@@ -95,21 +95,18 @@ footer{background:rgba(255,250,239,.8)}
 .aisleNav h2{width:100%;min-height:32px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1.1;white-space:nowrap}
 .aisleNav span{margin-top:3px}
 
-.shelf{position:relative;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 12px;padding:68px 14px 22px;border:5px solid #9a6a3f;border-radius:18px;background:
+.shelf{position:relative;width:100%;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 14px;padding:18px 14px 24px;border:5px solid #9a6a3f;border-radius:18px;background:
 repeating-linear-gradient(180deg,transparent 0,transparent 150px,#9a6a3f 151px,#9a6a3f 164px,#c98d50 165px,#c98d50 171px),
 linear-gradient(180deg,#fff0ce,#f5d8a8);box-shadow:inset 0 0 0 5px #d7a86d,0 8px 0 #7e5536}
 .shelf:before,.shelf:after{content:"";position:absolute;top:0;bottom:0;width:10px;background:linear-gradient(90deg,#7d5232,#b97a47,#7d5232);z-index:1}
 .shelf:before{left:0}.shelf:after{right:0}
-.shelfTop{position:absolute;left:12px;right:12px;top:10px;height:44px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;border-radius:11px;background:#704628;color:white;box-shadow:0 4px 0 #4f321e;z-index:2}
-.shelfTop span{font-weight:1000}.shelfTop small{color:#ffe8bd;font-weight:800}
-.shelf-produce .shelfTop{background:#5a8f45;box-shadow:0 4px 0 #3f6830}.shelf-dairy .shelfTop{background:#5c93b6;box-shadow:0 4px 0 #3d6c8a}.shelf-meat .shelfTop{background:#b95b54;box-shadow:0 4px 0 #88403b}.shelf-pantry .shelfTop{background:#a3763d;box-shadow:0 4px 0 #765429}.shelf-grocery .shelfTop{background:#ce733c;box-shadow:0 4px 0 #984c25}.shelf-bakery .shelfTop{background:#bd8553;box-shadow:0 4px 0 #865b37}.shelf-other .shelfTop{background:#806f9f;box-shadow:0 4px 0 #5d5077}
-.product{min-height:142px;padding:10px 8px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;border:2px solid #e7cda7;background:linear-gradient(180deg,#fffef9,#fff7e8);box-shadow:0 5px 0 #cda97c,0 9px 13px rgba(87,54,28,.08);z-index:2;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+.product{min-height:154px;padding:12px 10px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;border:2px solid #e7cda7;background:linear-gradient(180deg,#fffef9,#fff7e8);box-shadow:0 5px 0 #cda97c,0 9px 13px rgba(87,54,28,.08);z-index:2;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
 .product:hover,.product:active{transform:translateY(-3px) scale(1.02);box-shadow:0 8px 0 #cda97c,0 12px 16px rgba(87,54,28,.1)}
 .product .pickMark{position:absolute;top:8px;right:8px;margin:0;width:27px;height:27px;background:#f0dfc8;color:#72563d;box-shadow:0 2px 0 #d6b992}
 .product.selected .pickMark{background:#55a95b;color:white;box-shadow:0 2px 0 #3d7f42}
-.productIcon{font-size:46px;line-height:1;min-height:50px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;filter:drop-shadow(0 3px 2px rgba(92,56,25,.12));transition:transform .18s ease}
+.productIcon{font-size:54px;line-height:1;min-height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:9px;filter:drop-shadow(0 3px 2px rgba(92,56,25,.12));transition:transform .18s ease}
 .product.selected .productIcon{transform:scale(1.12) rotate(-4deg)}
-.product strong{display:block;margin:0;min-height:34px;font-size:13px;line-height:1.16;color:#513b2c}
+.product strong{display:block;margin:0;min-height:36px;font-size:14px;line-height:1.18;color:#513b2c}
 .product em{display:block;margin:5px 0 0;padding:4px 7px;border-radius:999px;background:#fff0d0;color:#bd5b27;font-size:12px}
 .product small{display:block;margin:6px 0 0;color:#94765d;font-size:10px;font-weight:800}
 
@@ -117,7 +114,6 @@ linear-gradient(180deg,#fff0ce,#f5d8a8);box-shadow:inset 0 0 0 5px #d7a86d,0 8px
  .marketDoor{padding:78px 16px 28px;border-radius:28px}.marketDoor:before,.marketDoor:after{height:38%;opacity:.6}.marketLogo{width:80px;height:80px;font-size:42px}.entryClues span{font-size:11px;padding:8px 10px}.marketEnterButton{width:100%;font-size:18px}
  .aisleNav{grid-template-columns:40px minmax(210px,1fr) 40px;gap:6px}.aisleNav>div{min-height:66px;padding:7px 6px}.aisleNav h2{font-size:18px;min-height:30px}
  .shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 10px;padding:64px 10px 18px;background:repeating-linear-gradient(180deg,transparent 0,transparent 146px,#9a6a3f 147px,#9a6a3f 158px,#c98d50 159px,#c98d50 165px),linear-gradient(180deg,#fff0ce,#f5d8a8)}
- .shelfTop{left:9px;right:9px;height:40px;padding:0 10px}.shelfTop span{font-size:12px}.shelfTop small{font-size:9px}
  .product{min-height:136px;padding:9px 6px 10px}.productIcon{font-size:42px}.product strong{font-size:12px;min-height:30px}.product em{font-size:11px}
 }
 
@@ -137,15 +133,13 @@ linear-gradient(180deg,#fff0ce,#f5d8a8);box-shadow:inset 0 0 0 5px #d7a86d,0 8px
 .gameAisle{min-height:0}
 .marketInAisle{display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .aisleView{position:relative;display:flex;flex-direction:column;min-height:0;height:min(62dvh,660px);overflow:hidden;border-radius:18px}
-.aisleSticky{flex:0 0 auto;position:relative;z-index:14;background:linear-gradient(180deg,#fff,#fff8eb);padding:6px 54px 8px;border-radius:16px 16px 0 0;border-bottom:1px solid #edd7bb}
-.shelfScroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:8px 54px 14px;scrollbar-width:thin;scrollbar-color:#d3a66d transparent}
+.aisleSticky{flex:0 0 auto;position:relative;z-index:14;background:linear-gradient(180deg,#fff,#fff8eb);padding:8px 10px 10px;border-radius:16px 16px 0 0;border-bottom:1px solid #edd7bb}
+.shelfScroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:10px 4px 14px;scrollbar-width:thin;scrollbar-color:#d3a66d transparent}
 .shelfScroll::-webkit-scrollbar{width:7px}.shelfScroll::-webkit-scrollbar-thumb{background:#d3a66d;border-radius:99px}
-.aisleEdge{position:absolute;top:126px;bottom:12px;width:46px;border:0;z-index:25;font-size:42px;font-weight:900;color:#6a4a31;background:rgba(255,240,207,.48);backdrop-filter:blur(2px);cursor:pointer;opacity:.72;transition:.16s}
-.aisleEdge:hover,.aisleEdge:active{opacity:1;background:rgba(255,225,170,.78)}
-.aisleEdgeLeft{left:4px;border-radius:18px 8px 8px 18px}.aisleEdgeRight{right:4px;border-radius:8px 18px 18px 8px}
-.aisleNav{grid-template-columns:40px minmax(260px,320px) 40px}
-.aisleNav>div{min-height:72px}
-.swipeHint{margin:8px 0 4px;background:#fff3d7;color:#7b5b3e}
+.aisleNav{width:min(560px,100%);margin:0 auto;grid-template-columns:46px minmax(0,1fr) 46px;gap:10px}
+.aisleNav>button{width:46px;height:46px;font-size:30px}
+.aisleNav>div{min-height:64px}
+.aisleNav h2{font-size:21px}
 .marketInAisle>.primaryAction{flex:0 0 auto;margin-top:10px}
 
 .productIcon img{width:58px;height:58px;object-fit:contain;display:block;filter:drop-shadow(0 3px 2px rgba(90,55,24,.12))}
@@ -163,13 +157,13 @@ linear-gradient(180deg,#fff0ce,#f5d8a8);box-shadow:inset 0 0 0 5px #d7a86d,0 8px
  .marketIntroScreen{min-height:450px;margin-top:8px;padding:28px 16px;border-radius:28px}.introDoor{font-size:70px}.marketIntroScreen>p{font-size:15px}.introRules span{font-size:12px}
  .hero:has(.gameAisle){padding-top:14px;padding-bottom:14px}
  .gameAisle{display:block}.gameAisle .recipe{display:none}
- .marketInAisle{height:calc(100dvh - 150px);min-height:510px;padding:10px}
+ .marketInAisle{height:calc(100dvh - 150px);min-height:510px;padding:6px}
  .aisleView{height:auto;flex:1;min-height:0;border-radius:16px}
- .aisleSticky{padding:5px 44px 7px}.aisleNav{grid-template-columns:34px minmax(180px,1fr) 34px}.aisleNav>button{width:34px;height:34px;font-size:22px}.aisleNav>div{min-height:58px}.aisleNav h2{font-size:17px;white-space:nowrap}.swipeHint{font-size:10px;margin:5px 0 2px}.aisleSticky .marketnote{font-size:11px;margin:4px 0}
- .shelfScroll{padding:7px 42px 10px}
- .aisleEdge{top:100px;width:36px;font-size:34px}.aisleEdgeLeft{left:2px}.aisleEdgeRight{right:2px}
- .shelf{grid-template-columns:repeat(2,minmax(0,1fr));padding-left:8px;padding-right:8px}
- .productIcon img{width:52px;height:52px}
+ .aisleSticky{padding:6px 4px 8px}.aisleNav{width:100%;grid-template-columns:42px minmax(0,1fr) 42px;gap:7px}.aisleNav>button{width:42px;height:42px;font-size:27px}.aisleNav>div{min-height:58px}.aisleNav h2{font-size:18px;white-space:nowrap}
+ .shelfScroll{padding:8px 0 10px}
+ .shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px;padding:16px 8px 20px}
+ .product{min-height:150px;padding:10px 8px 12px}.productIcon{font-size:48px;min-height:58px}.product strong{font-size:13px;min-height:32px}
+ .productIcon img{width:60px;height:60px}
  .basketDock{margin-top:8px}.basketDrawer{grid-template-columns:1fr;max-height:180px}.basketDockHead{padding:10px 11px}
  .marketInAisle>.primaryAction{margin-top:8px;padding:12px 14px}
 }
