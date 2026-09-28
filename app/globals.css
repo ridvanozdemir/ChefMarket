@@ -13,3 +13,37 @@
 
 .itemCountHint{margin-top:14px;padding:14px;border-radius:14px;background:#fff3cf;border:1px solid #ecd283;color:#5e503f;line-height:1.4}.jokerButton{width:100%;margin-top:12px;border:0;border-radius:14px;padding:13px 14px;background:#6b46c1;color:white;font-weight:900;cursor:pointer;box-shadow:0 4px 0 #4f3591}.jokerButton.used{background:#aaa0b8;box-shadow:none;cursor:not-allowed}.jokerReveal{margin-top:10px;padding:11px 12px;border-radius:12px;background:#f2eaff;border:1px solid #d7c4ff;color:#5c4687;font-size:13px}.jokerReveal small{display:block;margin-top:4px;color:#7b6b98}.aisleView{touch-action:pan-y}.aisleNav{display:grid;grid-template-columns:46px 1fr 46px;align-items:center;gap:10px}.aisleNav>button{width:46px;height:46px;border:0;border-radius:50%;background:#f3e8d8;color:#5a4d42;font-size:30px;font-weight:900;cursor:pointer}.aisleNav>div{text-align:center}.aisleNav h2{margin:0}.aisleNav span{display:block;margin-top:4px;color:#8b7a6b;font-size:12px;font-weight:800}.swipeHint{text-align:center;background:#eef6ff;color:#607086;border-radius:10px;padding:9px 10px;margin:12px 0;font-size:12px;font-weight:800}
 @media(max-width:720px){.recipe{display:block}.itemCountHint,.hint,.scoreformula{grid-column:auto}.aisleNav{grid-template-columns:40px 1fr 40px}.aisleNav>button{width:40px;height:40px;font-size:26px}.swipeHint{font-size:11px}.jokerButton{padding:12px}}
+
+/* Who Is the Chef? playful theme */
+:root{--ink:#4b352a;--cream:#fff6df;--orange:#ff7a2f;--yellow:#ffd66b;--peach:#ffb38a;--mint:#cfeccf}
+body{background:linear-gradient(180deg,#fff9ec 0%,#fff2d8 100%);color:var(--ink)}
+.topbar{background:rgba(255,250,239,.94);backdrop-filter:blur(10px);border-bottom:1px solid #efd9bd;box-shadow:0 3px 14px rgba(116,77,45,.08)}
+.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:900;letter-spacing:-.5px}
+.brand img{width:42px;height:42px;border-radius:13px;box-shadow:0 3px 8px rgba(151,83,25,.18)}
+.brand span{font-size:20px}
+.topActions{display:flex;align-items:center;gap:8px}
+.soundToggle{width:40px;height:40px;border:0;border-radius:14px;background:#fff0c2;cursor:pointer;font-size:19px;box-shadow:0 3px 0 #efd493}
+.badge{background:#fff0c2;border-color:#efd493;color:#6a4a31}
+.hero h1{color:#4f3527;text-shadow:0 2px 0 #fff}
+.hero h1 em{color:#ff762d}
+.eyebrow{color:#f06f2d}
+.cuisine,.recipe,.market,.quizCard,.finalCard{border-color:#ead7bd;background:rgba(255,255,255,.95);box-shadow:0 8px 0 #ead8c2,0 16px 28px rgba(120,78,41,.08)}
+.cuisine{border-radius:28px}
+.cuisine:not(.locked):hover{box-shadow:0 12px 0 #ead8c2,0 18px 30px rgba(120,78,41,.1)}
+.flag,.food{background:linear-gradient(135deg,#fff5cf,#ffe4a1);border:1px solid #f4ddb0}
+.primaryAction{background:linear-gradient(180deg,#ff8d43,#f36d2b);box-shadow:0 4px 0 #c9511b}
+.secondaryAction{background:#fff0d9;color:#634b39}
+.itemCountHint{background:linear-gradient(135deg,#fff3c8,#ffe6a7)}
+.jokerButton{background:linear-gradient(180deg,#8d6be3,#6b46c1)}
+.storemap{background-color:#efe3ce;border-color:#b99469}
+.mapaisle{background:repeating-linear-gradient(0deg,#fff9e9,#fff9e9 19px,#f0d7ad 20px,#f0d7ad 23px)}
+.product{background:#fffaf0;border-color:#efdcc4}
+.product.selected{background:#eaf8e7;border-color:#6fbb6d}
+.answers button{background:#fffaf0}
+.answers button:hover{background:#fff0df}
+.masteryHero{background:linear-gradient(135deg,#5a3d2f,#3b2b25);box-shadow:0 8px 0 #dfcbb4}
+.masteryRing{background:conic-gradient(#ff7a2f calc(var(--score)*1%),#80695d 0)}
+.splashScreen{position:fixed;inset:0;z-index:9999;background:#fff3d9;display:flex;align-items:center;justify-content:center}
+.splashScreen img{width:100%;height:100%;object-fit:cover}
+footer{background:rgba(255,250,239,.8)}
+@media(max-width:720px){.topbar{padding:0 12px}.brand{gap:7px}.brand img{width:36px;height:36px;border-radius:11px}.brand span{font-size:16px}.soundToggle{width:36px;height:36px}.badge{padding:8px 10px}.hero{padding-top:36px}.cuisine,.recipe,.market,.quizCard,.finalCard{border-radius:24px}.cuisine h2{font-size:22px}}
