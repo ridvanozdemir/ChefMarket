@@ -159,9 +159,13 @@ export default function Home(){
 
  const retryShopping=()=>{setBasket([]);setAisle(null);setShoppingScore(null);setMarketMessage("")};
 
+ const questionShift=chosen?((quizIndex+chosen.id.length)%3):0;
+ const shownOptions=questions[quizIndex]?questions[quizIndex].o.map((_,i)=>questions[quizIndex].o[(i+questionShift)%3]):[];
+ const shownCorrectIndex=questions[quizIndex]?((questions[quizIndex].a-questionShift+3)%3):0;
+
  const answerQuiz=answer=>{
   const next=[...quizAnswers];
-  next[quizIndex]=answer;
+  next[quizIndex]=answer===shownCorrectIndex?questions[quizIndex].a:-1;
   setQuizAnswers(next);
   if(quizIndex===questions.length-1)setStage("final");
   else setQuizIndex(i=>i+1);
@@ -183,7 +187,7 @@ export default function Home(){
  {marketMessage&&<div className="result bad">{marketMessage}<button className="retry" onClick={retryShopping}>Sepeti boşaltıp tekrar dene</button></div>}
  </div></div></>
  :stage==="quiz"?<><div className="eyebrow">2. ETAP · 🍳 PİŞİRME BİLGİSİ</div><h1><em>{chosen.name}</em> ustası mısın?</h1><p>Alışveriş barajını geçtin: <b>%{shoppingScore}</b>. Şimdi 5 soruluk, 3 seçenekli mini quiz var.</p>
- <div className="quizWrap"><div className="quizProgress"><span>Soru {quizIndex+1}/5</span><div><i style={{width:`${((quizIndex+1)/5)*100}%`}}/></div></div><div className="quizCard"><div className="quizEmoji">{chosen.emoji}</div><h2>{questions[quizIndex].q}</h2><div className="answers">{questions[quizIndex].o.map((o,i)=><button key={o} onClick={()=>answerQuiz(i)}><span>{String.fromCharCode(65+i)}</span>{o}</button>)}</div></div></div></>
+ <div className="quizWrap"><div className="quizProgress"><span>Soru {quizIndex+1}/5</span><div><i style={{width:`${((quizIndex+1)/5)*100}%`}}/></div></div><div className="quizCard"><div className="quizEmoji">{chosen.emoji}</div><h2>{questions[quizIndex].q}</h2><div className="answers">{shownOptions.map((o,i)=><button key={o} onClick={()=>answerQuiz(i)}><span>{String.fromCharCode(65+i)}</span>{o}</button>)}</div></div></div></>
  :<><div className="eyebrow">🏆 ŞEFLİK KARNESİ</div><h1><em>{chosen.name}</em> sonucun</h1><p>Hem alışveriş bilgisi hem de pişirme bilgisi birlikte değerlendirildi.</p>
  <div className="finalCard"><div className="finalFood">{chosen.emoji}</div><h2>{chosen.name}</h2><div className="scoreGrid"><div><span>🛒 Alışveriş</span><strong>%{shoppingScore}</strong></div><div><span>🍳 Pişirme Quiz</span><strong>%{quizScore}</strong></div></div><div className="average"><span>ORTALAMA PUAN</span><strong>{finalScore}<small>/100</small></strong></div><p>{finalScore>=90?"🏅 Usta şef!":finalScore>=75?"👏 Gayet iyi bir aşçılık bilgisi.":finalScore>=60?"👍 Temel bilgin iyi, biraz daha pratikle yükselir.":"📚 Bu yemek için biraz daha mutfak çalışması gerekiyor."}</p><div className="finalActions"><button className="secondaryAction" onClick={()=>{setDish(null);setStage("market");setBasket([])}}>Başka yemek seç</button><button className="primaryAction" onClick={restartDish}>Tekrar oyna</button></div></div></>}
  </section><footer><span>🛒 Bilgini alışverişte göster</span><span>🍳 5 soruda aşçılığını test et</span><span>🏆 Ortalama puanını gör</span></footer></main>
