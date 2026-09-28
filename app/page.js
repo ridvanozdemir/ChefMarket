@@ -3,6 +3,17 @@ import { useEffect, useState } from "react";
 
 import { aisles, cuisines, categories, dishes, quizBank, prices } from "./gameData";
 
+function ResultBurst({success=false,title,emoji,score,text}){
+ return <div className={"resultBurst "+(success?"win":"tryAgain")}>
+  <div className="confetti" aria-hidden="true"><i>✦</i><i>●</i><i>★</i><i>✦</i><i>●</i><i>★</i></div>
+  <div className="burstEmoji">{emoji}</div>
+  <h1>{title}</h1>
+  <div className="burstScore">%{score}</div>
+  <p>{text}</p>
+  <div className="burstDots"><span/><span/><span/></div>
+ </div>
+}
+
 export default function Home(){
  const [selected,setSelected]=useState(null);
  const [category,setCategory]=useState(null);
@@ -41,6 +52,8 @@ export default function Home(){
  const allScores=allDishIds.map(id=>typeof progress[id]?.best==="number"?progress[id].best:0);
  const completedTotal=allScores.filter(v=>v>0).length;
  const turkishScore=Math.round(allScores.reduce((a,b)=>a+b,0)/allDishIds.length);
+ const dishKind=category==="soup"?"çorbayı":category==="dessert"?"tatlıyı":"yemeği";
+ const quizPassed=quizScore>=70;
 
  useEffect(()=>{
   const timer=setTimeout(()=>setShowSplash(false),1400);
@@ -54,6 +67,14 @@ export default function Home(){
   }catch{}
   setProgressReady(true);
  },[]);
+
+ useEffect(()=>{
+  let timer;
+  if(stage==="marketSuccess")timer=setTimeout(()=>setStage("ready"),1700);
+  if(stage==="marketFail")timer=setTimeout(()=>setStage("market"),1700);
+  if(stage==="quizResult")timer=setTimeout(()=>setStage("final"),1800);
+  return ()=>timer&&clearTimeout(timer);
+ },[stage]);
 
  useEffect(()=>{
   if(!progressReady||stage!=="final"||!chosen||shoppingScore===null||quizAnswers.length<5)return;
@@ -106,7 +127,7 @@ export default function Home(){
  };
 
  const resetBack=()=>{
-  if(stage==="quiz"||stage==="final"){setStage("market");setQuizIndex(0);setQuizAnswers([]);return}
+  if(["quiz","ready","marketSuccess","marketFail","quizResult","final"].includes(stage)){setStage("market");setQuizIndex(0);setQuizAnswers([]);return}
   if(dish){setDish(null);setBasket([]);setAisle(null);setShoppingScore(null);setMarketMessage("");setJokerUsed(false);setJokerItem(null);return}
   if(category){setCategory(null);return}
   setSelected(null);
@@ -125,10 +146,11 @@ export default function Home(){
    playSound("success");
    setMarketMessage("");
    setAisle(null);
-   setStage("quiz");
+   setStage("marketSuccess");
   }else{
    playSound("fail");
-   setMarketMessage(`Alışveriş puanın %${score}. Pişirme etabına geçmek için en az %70 gerekiyor.`);
+   setMarketMessage(`Alışveriş puanın %${score}. Birkaç ürünü yeniden düşün; %70 barajını geçebilirsin!`);
+   setStage("marketFail");
   }
  };
 
@@ -172,8 +194,11 @@ export default function Home(){
   const next=[...quizAnswers];
   next[quizIndex]=answer===shownCorrectIndex?questions[quizIndex].a:-1;
   setQuizAnswers(next);
-  if(quizIndex===questions.length-1)setStage("final");
-  else setQuizIndex(i=>i+1);
+  if(quizIndex===questions.length-1){
+   const score=Math.round((next.filter((ans,i)=>ans===questions[i]?.a).length/questions.length)*100);
+   setTimeout(()=>playSound(score>=70?"success":"fail"),120);
+   setStage("quizResult");
+  }else setQuizIndex(i=>i+1);
  };
 
  const restartDish=()=>chooseDish(chosen.id);
@@ -181,7 +206,7 @@ export default function Home(){
  if(showSplash)return <div className="splashScreen"><img src="/splash-screen.svg" alt="Who Is the Chef?"/></div>;
 
  return <main>
- <header className="topbar"><div className="brand"><img src="/app-icon.svg" alt=""/><span>Who Is the Chef?</span></div><div className="topActions"><button className="soundToggle" onClick={()=>setSoundEnabled(v=>!v)} aria-label="Sesi aç veya kapat">{soundEnabled?"🔊":"🔇"}</button><div className="badge">{stage==="market"?"🛒 Alışveriş":stage==="quiz"?"🍳 Pişirme":"🏆 Sonuç"}</div></div></header>
+ <header className="topbar"><div className="brand"><img src="/app-icon.svg" alt=""/><span>Who Is the Chef?</span></div><div className="topActions"><button className="soundToggle" onClick={()=>setSoundEnabled(v=>!v)} aria-label="Sesi aç veya kapat">{soundEnabled?"🔊":"🔇"}</button><div className="badge">{["market","marketSuccess","marketFail"].includes(stage)?"🛒 Alışveriş":["ready","quiz"].includes(stage)?"🍳 Pişirme":"🏆 Sonuç"}</div></div></header>
  <section className="hero">
  {!selected?<><div className="eyebrow">MUTFAK MACERASI</div><h1>Bugün hangi mutfakta<br/><em>şef olacaksın?</em></h1><p>Doğru malzemeleri bul, alışveriş barajını geç ve ardından aşçılık bilgini kanıtla.</p><div className="cards">{cuisines.map(c=><button disabled={c.locked} key={c.id} className={"cuisine "+(c.locked?"locked":"")} onClick={()=>!c.locked&&setSelected(c.id)}><div className={"flag "+c.color}>{c.flag}</div><h2>{c.title}</h2><p>{c.text}</p><span>{c.locked?"🔒 Yakında":"Mutfağı seç →"}</span></button>)}</div></>
  :!category?<><button className="back" onClick={resetBack}>← Mutfaklara dön</button><div className="eyebrow">{cuisine.flag} TÜRK MUTFAĞI</div><h1>Şeflik <em>yolculuğun.</em></h1><p>Her yemeğin en iyi puanı kaydedilir. Yemekleri tamamladıkça kategori ustalığın ve Türk Mutfağı Şeflik Puanın oluşur.</p>
@@ -195,8 +220,12 @@ export default function Home(){
  <button className="primaryAction" onClick={finishShopping}>Alışverişi tamamla ve kasaya git →</button>
  {marketMessage&&<div className="result bad">{marketMessage}<button className="retry" onClick={retryShopping}>Sepeti boşaltıp tekrar dene</button></div>}
  </div></div></>
+ :stage==="marketSuccess"?<ResultBurst success title="Kasayı geçtin!" emoji="🎉" score={shoppingScore} text="Harika alışveriş! Şimdi mutfağa geçme zamanı."/>
+ :stage==="marketFail"?<ResultBurst title="Az kaldı!" emoji="💪" score={shoppingScore} text="Moral bozmak yok. Sepetine bir kez daha bakıp tekrar dene!"/>
+ :stage==="ready"?<div className="readyScreen"><div className="readyMascot">{chosen.emoji}</div><div className="eyebrow">2. ETAP · MUTFAK SENİN</div><h1><em>{chosen.name}</em> {dishKind} yapmaya hazır mısın?</h1><p>Alışveriş puanın <b>%{shoppingScore}</b>. Şimdi 5 soruda pişirme bilgini göster ve şeflik puanını yükselt.</p><div className="readyBadges"><span>🧠 5 soru</span><span>🎯 3 seçenek</span><span>🏆 Şeflik puanı</span></div><button className="startQuizButton" onClick={()=>{playSound("success");setStage("quiz")}}>🔥 Hazırım, Başla!</button></div>
  :stage==="quiz"?<><div className="eyebrow">2. ETAP · 🍳 PİŞİRME BİLGİSİ</div><h1><em>{chosen.name}</em> ustası mısın?</h1><p>Alışveriş barajını geçtin: <b>%{shoppingScore}</b>. Şimdi 5 soruluk, 3 seçenekli mini quiz var.</p>
  <div className="quizWrap"><div className="quizProgress"><span>Soru {quizIndex+1}/5</span><div><i style={{width:`${((quizIndex+1)/5)*100}%`}}/></div></div><div className="quizCard"><div className="quizEmoji">{chosen.emoji}</div><h2>{questions[quizIndex].q}</h2><div className="answers">{shownOptions.map((o,i)=><button key={o} onClick={()=>answerQuiz(i)}><span>{String.fromCharCode(65+i)}</span>{o}</button>)}</div></div></div></>
+ :stage==="quizResult"?<ResultBurst success={quizPassed} title={quizPassed?"Tebrikler Şef!":"Bir tur daha?"} emoji={quizPassed?"🏆":"🧑‍🍳"} score={quizScore} text={quizPassed?"Pişirme etabını başarıyla tamamladın!":"Gayet iyi deneme. Soruları bir kez daha çözersen skorunu yükseltebilirsin."}/>
  :<><div className="eyebrow">🏆 ŞEFLİK KARNESİ</div><h1><em>{chosen.name}</em> sonucun</h1><p>Hem alışveriş bilgisi hem de pişirme bilgisi birlikte değerlendirildi.</p>
  <div className="finalCard"><div className="finalFood">{chosen.emoji}</div><h2>{chosen.name}</h2><div className="scoreGrid"><div><span>🛒 Alışveriş</span><strong>%{shoppingScore}</strong></div><div><span>🍳 Pişirme Quiz</span><strong>%{quizScore}</strong></div></div><div className="average"><span>BU DENEME</span><strong>{finalScore}<small>/100</small></strong></div><div className="savedScore"><span>🏆 Kaydedilen en iyi puan</span><b>{Math.max(progress[chosen.id]?.best??0,finalScore)}/100</b></div><p>{finalScore>=90?"🏅 Usta şef!":finalScore>=75?"👏 Gayet iyi bir aşçılık bilgisi.":finalScore>=60?"👍 Temel bilgin iyi, biraz daha pratikle yükselir.":"📚 Bu yemek için biraz daha mutfak çalışması gerekiyor."}</p><div className="masteryMini"><b>{categories.find(c=>c.id===category).title} Ustalığı</b><span>{categoryStats[category].score??finalScore}/100 · {Math.max(categoryStats[category].completed,progress[chosen.id]?categoryStats[category].completed:categoryStats[category].completed+1)}/10 yemek</span></div><div className="finalActions"><button className="secondaryAction" onClick={()=>{setDish(null);setStage("market");setBasket([])}}>Başka yemek seç</button><button className="primaryAction" onClick={restartDish}>Tekrar oyna</button></div></div></>}
  </section><footer><span>🛒 Bilgini alışverişte göster</span><span>🍳 5 soruda aşçılığını test et</span><span>🏆 Ortalama puanını gör</span></footer></main>
