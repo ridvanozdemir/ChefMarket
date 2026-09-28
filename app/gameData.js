@@ -246,10 +246,10 @@ export const quizBank=Object.fromEntries(Object.values(dishes).flat().map(d=>[d.
 
 
 export const productIcons={
-"Soğan":"🧅","Havuç":"🥕","Domates":"🍅","Biber":"🫑","Patlıcan":"🍆","Limon":"🍋","Sarımsak":"🧄","Maydanoz":"🌿","Patates":"🥔","Salatalık":"🥒","Kabak":"🥒","Kereviz":"🌱","Pırasa":"🥬",
-"Kıyma":"🥩","Dana kuşbaşı":"🥩","Tavuk":"🍗","Dana işkembe":"🥩","Kuzu eti":"🍖",
-"Süt":"🥛","Yoğurt":"🥣","Tereyağı":"🧈","Yumurta":"🥚","Kaşar":"🧀","Beyaz peynir":"🧀",
-"Kırmızı mercimek":"🫘","Bulgur":"🌾","Pirinç":"🍚","Kuru fasulye":"🫘","Nohut":"🫘","İrmik":"🌾","Un":"🌾","Nişasta":"🥣","Makarna":"🍝","Arpa şehriye":"🍜","Tel şehriye":"🍜","Buğday":"🌾","Tarhana":"🥣",
+"Soğan":"🧅","Havuç":"🥕","Domates":"🍅","Biber":"🫑","Patlıcan":"🍆","Limon":"🍋","Sarımsak":"🧄","Maydanoz":"🌿","Patates":"🥔","Salatalık":"/product-icons/cucumber.svg","Kabak":"/product-icons/zucchini.svg","Kereviz":"🌱","Pırasa":"🥬",
+"Kıyma":"/product-icons/ground-beef.svg","Dana kuşbaşı":"/product-icons/beef-cubes.svg","Tavuk":"🍗","Dana işkembe":"/product-icons/tripe.svg","Kuzu eti":"/product-icons/lamb.svg",
+"Süt":"🥛","Yoğurt":"🥣","Tereyağı":"🧈","Yumurta":"🥚","Kaşar":"/product-icons/cheddar.svg","Beyaz peynir":"/product-icons/white-cheese.svg",
+"Kırmızı mercimek":"/product-icons/red-lentils.svg","Bulgur":"🌾","Pirinç":"🍚","Kuru fasulye":"/product-icons/dry-beans.svg","Nohut":"/product-icons/chickpeas.svg","İrmik":"🌾","Un":"🌾","Nişasta":"🥣","Makarna":"🍝","Arpa şehriye":"🍜","Tel şehriye":"🍜","Buğday":"🌾","Tarhana":"🥣",
 "Şeker":"🍬","Tuz":"🧂","Domates salçası":"🥫","Biber salçası":"🥫","Vanilya":"🌼","Nane":"🌿","Karabiber":"⚫","Pul biber":"🌶️","Tarçın":"🪵","Çam fıstığı":"🌰","Antep fıstığı":"🥜","Fındık":"🌰","Ceviz":"🌰","Kuş üzümü":"🍇","Zeytin":"🫒","Sıvı yağ":"🫗","Zeytinyağı":"🫒",
 "Baklavalık yufka":"🫓","Güllaç yaprağı":"🫓","Ekmek":"🍞",
 "Krema":"🥛","Mantar":"🍄","Su":"💧","Asma yaprağı":"🍃","Gül suyu":"🌹","Maya":"🧫"
