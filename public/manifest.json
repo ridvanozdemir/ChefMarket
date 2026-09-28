@@ -1,1 +1,17 @@
-{"name":"ChefMarket","short_name":"ChefMarket","start_url":"/","display":"standalone","background_color":"#fffaf0","theme_color":"#f36d2b","description":"Mutfak ve market temalı yemek oyunu"}
+{
+  "name": "Who Is the Chef?",
+  "short_name": "Who Is the Chef?",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff6df",
+  "theme_color": "#ff8a3d",
+  "description": "Market ve aşçılık bilgini test eden sevimli yemek oyunu",
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
