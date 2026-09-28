@@ -15,7 +15,7 @@ export const aisles=[
 {id:"produce",icon:"🥕",name:"Manav",products:["Soğan","Havuç","Domates","Biber","Patlıcan","Limon","Sarımsak","Maydanoz","Patates","Salatalık","Kabak","Kereviz","Pırasa"]},
 {id:"meat",icon:"🥩",name:"Kasap",products:["Kıyma","Dana kuşbaşı","Tavuk","Dana işkembe","Kuzu eti"]},
 {id:"dairy",icon:"🥛",name:"Süt & Kahvaltı",products:["Süt","Yoğurt","Tereyağı","Yumurta","Kaşar","Beyaz peynir"]},
-{id:"pantry",icon:"🌾",name:"Bakliyat & Tahıl",products:["Kırmızı mercimek","Bulgur","Pirinç","Kuru fasulye","Nohut","İrmik","Un","Nişasta","Makarna","Arpa şehriye","Tel şehriye","Buğday","Tarhana"]},
+{id:"pantry",icon:"🌾",name:"Bakliyat & Tahıl",products:["Kırmızı mercimek","Bulgur","Pirinç","Kuru fasulye","Nohut","İrmik","Un","Nişasta","Makarna","Arpa şehriye","Tel şehriye","Buğday","Tarhana","Maya"]},
 {id:"grocery",icon:"🫙",name:"Temel Gıda",products:["Şeker","Tuz","Domates salçası","Biber salçası","Vanilya","Nane","Karabiber","Pul biber","Tarçın","Çam fıstığı","Antep fıstığı","Fındık","Ceviz","Kuş üzümü","Zeytin","Sıvı yağ","Zeytinyağı"]},
 {id:"bakery",icon:"🥖",name:"Hamur & Yufka",products:["Baklavalık yufka","Güllaç yaprağı","Ekmek"]},
 {id:"other",icon:"🧺",name:"Diğer",products:["Krema","Mantar","Su","Asma yaprağı","Gül suyu"]}
