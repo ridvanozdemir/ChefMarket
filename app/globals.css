@@ -47,3 +47,33 @@ body{background:linear-gradient(180deg,#fff9ec 0%,#fff2d8 100%);color:var(--ink)
 .splashScreen img{width:100%;height:100%;object-fit:cover}
 footer{background:rgba(255,250,239,.8)}
 @media(max-width:720px){.topbar{padding:0 12px}.brand{gap:7px}.brand img{width:36px;height:36px;border-radius:11px}.brand span{font-size:16px}.soundToggle{width:36px;height:36px}.badge{padding:8px 10px}.hero{padding-top:36px}.cuisine,.recipe,.market,.quizCard,.finalCard{border-radius:24px}.cuisine h2{font-size:22px}}
+
+/* Competition transitions */
+.resultBurst,.readyScreen{max-width:720px;margin:34px auto 0;min-height:520px;border-radius:34px;padding:42px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,#fffdf8,#fff1d5);border:2px solid #f0d7b5;box-shadow:0 12px 0 #ead5bb,0 24px 44px rgba(110,70,40,.12)}
+.resultBurst.win{background:linear-gradient(180deg,#fff9d9,#ffe7a8)}
+.resultBurst.tryAgain{background:linear-gradient(180deg,#fff7ef,#ffe2ce)}
+.burstEmoji{font-size:92px;animation:burstPop .65s cubic-bezier(.2,.8,.2,1) both}
+.resultBurst h1{font-size:clamp(42px,8vw,74px);margin:10px 0 4px;color:#543527;animation:riseIn .55s .12s both}
+.resultBurst.win h1{color:#d65e1e}
+.burstScore{font-size:72px;line-height:1;font-weight:1000;color:#f36d2b;margin:10px 0;animation:scorePop .65s .25s both}
+.resultBurst p{max-width:520px;font-size:19px;line-height:1.5;color:#6e5848;margin:8px auto 18px;animation:riseIn .55s .35s both}
+.burstDots{display:flex;gap:8px}.burstDots span{width:10px;height:10px;border-radius:50%;background:#f36d2b;animation:dotBounce .75s infinite alternate}.burstDots span:nth-child(2){animation-delay:.12s}.burstDots span:nth-child(3){animation-delay:.24s}
+.confetti{position:absolute;inset:0;pointer-events:none}
+.confetti i{position:absolute;font-style:normal;font-size:25px;color:#f36d2b;animation:confettiFloat 1.6s ease-in-out infinite}
+.confetti i:nth-child(1){left:12%;top:18%;color:#ffb52e}.confetti i:nth-child(2){left:20%;top:65%;color:#65b96a;animation-delay:.2s}.confetti i:nth-child(3){right:15%;top:22%;color:#8b67d4;animation-delay:.35s}.confetti i:nth-child(4){right:20%;top:68%;color:#f36d2b;animation-delay:.5s}.confetti i:nth-child(5){left:42%;top:9%;color:#55a8df;animation-delay:.7s}.confetti i:nth-child(6){right:40%;bottom:8%;color:#ffbf32;animation-delay:.9s}
+.readyScreen{background:linear-gradient(160deg,#fffdf8,#fff0cc)}
+.readyMascot{width:132px;height:132px;border-radius:36px;display:grid;place-items:center;font-size:72px;background:linear-gradient(135deg,#fff0b6,#ffd47b);box-shadow:0 8px 0 #eccb83;animation:readyBob 1.6s ease-in-out infinite}
+.readyScreen h1{font-size:clamp(38px,7vw,62px);margin:18px 0 8px;line-height:1.03}
+.readyScreen>p{max-width:560px;color:#6e5848;font-size:18px;line-height:1.55}
+.readyBadges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:16px 0 24px}
+.readyBadges span{padding:10px 14px;border-radius:999px;background:#fff;border:1px solid #efd7b7;font-weight:900;color:#684d39;box-shadow:0 3px 0 #ead8c2}
+.startQuizButton{border:0;border-radius:18px;padding:17px 28px;background:linear-gradient(180deg,#ff963f,#f36d2b);color:#fff;font-size:19px;font-weight:1000;cursor:pointer;box-shadow:0 6px 0 #c9511b;animation:startGlow 1.3s ease-in-out infinite}
+.startQuizButton:active{transform:translateY(4px);box-shadow:0 2px 0 #c9511b}
+@keyframes burstPop{0%{transform:scale(.25) rotate(-18deg);opacity:0}70%{transform:scale(1.14) rotate(5deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes scorePop{0%{transform:scale(.65);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes riseIn{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes dotBounce{from{transform:translateY(0);opacity:.45}to{transform:translateY(-8px);opacity:1}}
+@keyframes confettiFloat{0%,100%{transform:translateY(0) rotate(0deg);opacity:.5}50%{transform:translateY(-16px) rotate(20deg);opacity:1}}
+@keyframes readyBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+@keyframes startGlow{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@media(max-width:720px){.resultBurst,.readyScreen{min-height:460px;margin-top:10px;padding:30px 18px;border-radius:28px}.burstEmoji{font-size:76px}.burstScore{font-size:58px}.resultBurst p,.readyScreen>p{font-size:16px}.readyMascot{width:112px;height:112px;font-size:62px}.readyBadges span{font-size:12px;padding:9px 11px}.startQuizButton{width:100%;font-size:18px}}
