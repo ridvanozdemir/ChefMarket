@@ -1,0 +1,6 @@
+{
+  "appId": "com.chefmarket.app",
+  "appName": "ChefMarket",
+  "webDir": "out",
+  "bundledWebRuntime": false
+}
