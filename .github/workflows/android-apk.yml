@@ -52,14 +52,16 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK 36 only if missing
+      - name: Ensure Android SDK 36
         shell: bash
         run: |
-          if [ ! -d "$ANDROID_SDK_ROOT/platforms/android-36" ]; then
-            sdkmanager "platforms;android-36" "build-tools;36.0.0"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(command -v sdkmanager)"
+          fi
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          if [ ! -d "$ANDROID_HOME/platforms/android-36" ] || [ ! -d "$ANDROID_HOME/build-tools/36.0.0" ]; then
+            "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0"
           fi
 
       - name: Create Android project
