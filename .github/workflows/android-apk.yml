@@ -35,6 +35,14 @@ jobs:
       - name: Install JavaScript dependencies
         run: npm install --no-audit --no-fund --prefer-offline
 
+      - name: Cache Next.js build
+        uses: actions/cache@v5
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('package.json', 'app/**/*.js', 'app/**/*.css') }}
+          restore-keys: |
+            next-${{ runner.os }}-
+
       - name: Build static web app
         run: npm run build
 
