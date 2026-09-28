@@ -39,8 +39,15 @@ jobs:
           java-version: "17"
           cache: gradle
 
+      - name: Ensure Android SDK 36
+        shell: bash
+        run: |
+          if [ ! -d "$ANDROID_HOME/platforms/android-36" ]; then
+            yes | sdkmanager "platforms;android-36" "build-tools;36.0.0" >/dev/null
+          fi
+
       - name: Install JavaScript dependencies
-        run: npm install --no-audit --no-fund
+        run: npm install --no-audit --no-fund --prefer-offline
 
       - name: Build static web app
         run: npm run build
@@ -53,7 +60,9 @@ jobs:
 
       - name: Build debug APK
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
