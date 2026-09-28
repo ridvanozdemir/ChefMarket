@@ -249,10 +249,10 @@ export const productIcons={
 "Soğan":"🧅","Havuç":"🥕","Domates":"🍅","Biber":"🫑","Patlıcan":"🍆","Limon":"🍋","Sarımsak":"🧄","Maydanoz":"🌿","Patates":"🥔","Salatalık":"/product-icons/cucumber.svg","Kabak":"/product-icons/zucchini.svg","Kereviz":"🌱","Pırasa":"🥬",
 "Kıyma":"/product-icons/ground-beef.svg","Dana kuşbaşı":"/product-icons/beef-cubes.svg","Tavuk":"🍗","Dana işkembe":"/product-icons/tripe.svg","Kuzu eti":"/product-icons/lamb.svg",
 "Süt":"🥛","Yoğurt":"🥣","Tereyağı":"🧈","Yumurta":"🥚","Kaşar":"/product-icons/cheddar.svg","Beyaz peynir":"/product-icons/white-cheese.svg",
-"Kırmızı mercimek":"/product-icons/red-lentils.svg","Bulgur":"🌾","Pirinç":"🍚","Kuru fasulye":"/product-icons/dry-beans.svg","Nohut":"/product-icons/chickpeas.svg","İrmik":"🌾","Un":"🌾","Nişasta":"🥣","Makarna":"🍝","Arpa şehriye":"🍜","Tel şehriye":"🍜","Buğday":"🌾","Tarhana":"🥣",
-"Şeker":"🍬","Tuz":"🧂","Domates salçası":"🥫","Biber salçası":"🥫","Vanilya":"🌼","Nane":"🌿","Karabiber":"⚫","Pul biber":"🌶️","Tarçın":"🪵","Çam fıstığı":"🌰","Antep fıstığı":"🥜","Fındık":"🌰","Ceviz":"🌰","Kuş üzümü":"🍇","Zeytin":"🫒","Sıvı yağ":"🫗","Zeytinyağı":"🫒",
-"Baklavalık yufka":"🫓","Güllaç yaprağı":"🫓","Ekmek":"🍞",
-"Krema":"🥛","Mantar":"🍄","Su":"💧","Asma yaprağı":"🍃","Gül suyu":"🌹","Maya":"🧫"
+"Kırmızı mercimek":"/product-icons/red-lentils.svg","Bulgur":"/product-icons/bulgur.svg","Pirinç":"🍚","Kuru fasulye":"/product-icons/dry-beans.svg","Nohut":"/product-icons/chickpeas.svg","İrmik":"/product-icons/semolina.svg","Un":"/product-icons/flour.svg","Nişasta":"/product-icons/starch.svg","Makarna":"🍝","Arpa şehriye":"🍜","Tel şehriye":"🍜","Buğday":"/product-icons/wheat.svg","Tarhana":"🥣",
+"Şeker":"🍬","Tuz":"🧂","Domates salçası":"🥫","Biber salçası":"🥫","Vanilya":"🌼","Nane":"🌿","Karabiber":"⚫","Pul biber":"🌶️","Tarçın":"🪵","Çam fıstığı":"🌰","Antep fıstığı":"🥜","Fındık":"🌰","Ceviz":"🌰","Kuş üzümü":"🍇","Zeytin":"🫒","Sıvı yağ":"/product-icons/sunflower-oil.svg","Zeytinyağı":"/product-icons/olive-oil.svg",
+"Baklavalık yufka":"/product-icons/baklava-yufka.svg","Güllaç yaprağı":"/product-icons/gullac-sheet.svg","Ekmek":"🍞",
+"Krema":"/product-icons/cream.svg","Mantar":"🍄","Su":"💧","Asma yaprağı":"🍃","Gül suyu":"🌹","Maya":"🧫"
 };
 
 export const prices={
