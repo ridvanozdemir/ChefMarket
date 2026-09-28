@@ -29,7 +29,6 @@ export default function Home(){
  const [progressReady,setProgressReady]=useState(false);
  const [jokerUsed,setJokerUsed]=useState(false);
  const [jokerItem,setJokerItem]=useState(null);
- const [touchStartX,setTouchStartX]=useState(null);
  const [showSplash,setShowSplash]=useState(true);
  const [soundEnabled,setSoundEnabled]=useState(true);
  const [basketOpen,setBasketOpen]=useState(false);
