@@ -70,6 +70,9 @@ jobs:
       - name: Sync web assets
         run: npx cap sync android
 
+      - name: Apply Who Is the Chef branding
+        run: npm run android:brand
+
       - name: Configure Gradle cache
         uses: gradle/actions/setup-gradle@v4
 
@@ -82,7 +85,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ChefMarket-debug-${{ github.run_number }}
+          name: Who-Is-the-Chef-debug-${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 3
           if-no-files-found: error
