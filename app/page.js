@@ -30,13 +30,15 @@ export default function Home(){
  const quizScore=questions.length?Math.round((quizAnswers.filter((answer,i)=>answer===questions[i]?.a).length/questions.length)*100):0;
  const finalScore=shoppingScore===null?0:Math.round((shoppingScore+quizScore)/2);
  const categoryStats=Object.fromEntries(categories.map(c=>{
-  const scores=dishes[c.id].map(d=>progress[d.id]?.best).filter(v=>typeof v==="number");
-  return [c.id,{completed:scores.length,total:dishes[c.id].length,score:scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null}];
+  const allScores=dishes[c.id].map(d=>typeof progress[d.id]?.best==="number"?progress[d.id].best:0);
+  const completed=allScores.filter(v=>v>0).length;
+  const score=Math.round(allScores.reduce((a,b)=>a+b,0)/dishes[c.id].length);
+  return [c.id,{completed,total:dishes[c.id].length,score}];
  }));
  const allDishIds=Object.values(dishes).flat().map(d=>d.id);
- const overallScores=allDishIds.map(id=>progress[id]?.best).filter(v=>typeof v==="number");
- const turkishScore=overallScores.length?Math.round(overallScores.reduce((a,b)=>a+b,0)/overallScores.length):null;
- const completedTotal=overallScores.length;
+ const allScores=allDishIds.map(id=>typeof progress[id]?.best==="number"?progress[id].best:0);
+ const completedTotal=allScores.filter(v=>v>0).length;
+ const turkishScore=Math.round(allScores.reduce((a,b)=>a+b,0)/allDishIds.length);
 
  useEffect(()=>{
   try{
@@ -137,8 +139,8 @@ export default function Home(){
  <section className="hero">
  {!selected?<><div className="eyebrow">MUTFAK MACERASI</div><h1>Bugün hangi mutfakta<br/><em>şef olacaksın?</em></h1><p>Doğru malzemeleri bul, alışveriş barajını geç ve ardından aşçılık bilgini kanıtla.</p><div className="cards">{cuisines.map(c=><button disabled={c.locked} key={c.id} className={"cuisine "+(c.locked?"locked":"")} onClick={()=>!c.locked&&setSelected(c.id)}><div className={"flag "+c.color}>{c.flag}</div><h2>{c.title}</h2><p>{c.text}</p><span>{c.locked?"🔒 Yakında":"Mutfağı seç →"}</span></button>)}</div></>
  :!category?<><button className="back" onClick={resetBack}>← Mutfaklara dön</button><div className="eyebrow">{cuisine.flag} TÜRK MUTFAĞI</div><h1>Şeflik <em>yolculuğun.</em></h1><p>Her yemeğin en iyi puanı kaydedilir. Yemekleri tamamladıkça kategori ustalığın ve Türk Mutfağı Şeflik Puanın oluşur.</p>
- <div className="masteryHero"><div><span>🇹🇷 TÜRK MUTFAĞI ŞEFLİK PUANI</span><strong>{turkishScore===null?"—":turkishScore}<small>{turkishScore===null?"":"/100"}</small></strong><p>{completedTotal}/30 yemek tamamlandı{completedTotal<30?" · 30/30 tamamlanınca tam karnen hazır.":" · Türk Mutfağı karnen tamamlandı!"}</p></div><div className="masteryRing" style={{"--score":turkishScore??0}}><b>{turkishScore??0}%</b></div></div>
- <div className="cards categories masteryCards">{categories.map(c=>{const st=categoryStats[c.id];return <button key={c.id} className="cuisine category" onClick={()=>setCategory(c.id)}><div className="food">{c.icon}</div><h2>{c.title} Ustalığı</h2><div className="categoryScore"><b>{st.score===null?"—":st.score}</b><span>{st.score===null?"Henüz puan yok":"/100"}</span></div><p>{st.completed}/{st.total} yemek tamamlandı</p><div className="miniProgress"><i style={{width:`${(st.completed/st.total)*100}%`}}/></div><span>{st.completed===st.total?"🏅 Ustalık tamamlandı":"Devam et →"}</span></button>})}</div></>
+ <div className="masteryHero"><div><span>🇹🇷 TÜRK MUTFAĞI ŞEFLİK PUANI</span><strong>{turkishScore}<small>/100</small></strong><p>{completedTotal}/30 yemek tamamlandı{completedTotal<30?" · 30/30 tamamlanınca tam karnen hazır.":" · Türk Mutfağı karnen tamamlandı!"}</p></div><div className="masteryRing" style={{"--score":turkishScore}}><b>{turkishScore}%</b></div></div>
+ <div className="cards categories masteryCards">{categories.map(c=>{const st=categoryStats[c.id];return <button key={c.id} className="cuisine category" onClick={()=>setCategory(c.id)}><div className="food">{c.icon}</div><h2>{c.title} Ustalığı</h2><div className="categoryScore"><b>{st.score}</b><span>/100</span></div><p>{st.completed}/{st.total} yemek tamamlandı</p><div className="miniProgress"><i style={{width:`${(st.completed/st.total)*100}%`}}/></div><span>{st.completed===st.total?"🏅 Ustalık tamamlandı":"Devam et →"}</span></button>})}</div></>
  :!dish?<><button className="back" onClick={resetBack}>← Kategorilere dön</button><div className="eyebrow">{categories.find(c=>c.id===category).icon} {categories.find(c=>c.id===category).title.toUpperCase()} USTALIĞI · {categoryStats[category].completed}/10</div><h1>Yemeğini <em>seç.</em></h1><p>Malzeme listesi verilmeyecek. Her yemeğin en iyi sonucu kategori ustalık puanına eklenir.</p><div className="cards">{dishes[category].map(d=>{const saved=progress[d.id];return <button key={d.id} className="cuisine dish" onClick={()=>chooseDish(d.id)}><div className="food">{d.emoji}</div><h2>{d.name}</h2><p>⏱ {d.time} · 🎯 {d.difficulty}</p>{saved&&<div className="dishBest">🏆 En iyi: <b>{saved.best}/100</b><small>{saved.attempts} deneme</small></div>}<span>{saved?"Puanını yükselt →":"Teste başla →"}</span></button>})}</div></>
  :stage==="market"?<><button className="back" onClick={resetBack}>← Yemeklere dön</button><div className="eyebrow">1. ETAP · 🛒 ALIŞVERİŞ</div><h1><em>{chosen.name}</em> için alışveriş</h1><p>Malzeme listesi yok. Bu yemeğin gerektirdiğini düşündüğün ürünleri doğru reyonlardan bulup sepete ekle. Gereksiz ürünler puanını düşürür.</p>
  <div className="game"><aside className="recipe"><div className="bigfood">{chosen.emoji}</div><h2>{chosen.name}</h2><p>Bilgine güven ve alışverişini tamamla.</p><div className="itemCountHint">🧺 Bu yemek için toplam <b>{chosen.ingredients.length} ürün</b> almalısın.</div><div className="hint neutral">🎯 Pişirme etabına geçiş barajı: <b>%70</b></div><button className={"jokerButton "+(jokerUsed?"used":"")} onClick={useJoker} disabled={jokerUsed}>{jokerUsed?"🃏 Joker kullanıldı":"🃏 1 Joker Kullan"}</button>{jokerItem&&<div className="jokerReveal">Gösterilen ürün: <b>{jokerItem}</b><small>Skorda yarım doğru sayılır.</small></div>}<div className="scoreformula">Doğru seçimler puanı yükseltir.<br/>Gereksiz ürünler puanı düşürür.</div></aside>
