@@ -3,8 +3,8 @@
   "short_name": "Who Is the Chef?",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fff6df",
-  "theme_color": "#ff8a3d",
+  "background_color": "#fff8e8",
+  "theme_color": "#ff6f20",
   "description": "Market ve aşçılık bilgini test eden sevimli yemek oyunu",
   "icons": [
     {
