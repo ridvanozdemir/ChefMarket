@@ -11,6 +11,11 @@ on:
         description: "Sürüm adı"
         required: true
         default: "1.0.0"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/release-trigger"
 
 permissions:
   contents: read
@@ -22,6 +27,9 @@ concurrency:
 jobs:
   build-aab:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION_CODE: ${{ github.event.inputs.version_code || '1' }}
+      RELEASE_VERSION_NAME: ${{ github.event.inputs.version_name || '1.0.0' }}
     timeout-minutes: 18
 
     steps:
@@ -95,12 +103,9 @@ jobs:
 
       - name: Set Android version
         shell: bash
-        env:
-          VERSION_CODE: ${{ inputs.version_code }}
-          VERSION_NAME: ${{ inputs.version_name }}
         run: |
-          sed -i -E "s/versionCode [0-9]+/versionCode ${VERSION_CODE}/" android/app/build.gradle
-          sed -i -E "s/versionName \"[^\"]+\"/versionName \"${VERSION_NAME}\"/" android/app/build.gradle
+          sed -i -E "s/versionCode [0-9]+/versionCode ${RELEASE_VERSION_CODE}/" android/app/build.gradle
+          sed -i -E "s/versionName \"[^\"]+\"/versionName \"${RELEASE_VERSION_NAME}\"/" android/app/build.gradle
           grep -n "versionCode\|versionName" android/app/build.gradle
 
       - name: Restore upload keystore
@@ -132,7 +137,7 @@ jobs:
       - name: Upload signed AAB
         uses: actions/upload-artifact@v4
         with:
-          name: Who-Is-the-Chef-Play-${{ inputs.version_name }}-${{ inputs.version_code }}
+          name: Who-Is-the-Chef-Play-${{ env.RELEASE_VERSION_NAME }}-${{ env.RELEASE_VERSION_CODE }}
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 3
           if-no-files-found: error
