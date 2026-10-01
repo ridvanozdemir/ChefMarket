@@ -6,11 +6,11 @@ on:
       version_code:
         description: "Android versionCode (her yüklemede artır)"
         required: true
-        default: "1"
+        default: "2"
       version_name:
         description: "Sürüm adı"
         required: true
-        default: "1.0.0"
+        default: "1.0.1"
   push:
     branches:
       - main
@@ -28,8 +28,8 @@ jobs:
   build-aab:
     runs-on: ubuntu-latest
     env:
-      RELEASE_VERSION_CODE: ${{ github.event.inputs.version_code || '1' }}
-      RELEASE_VERSION_NAME: ${{ github.event.inputs.version_name || '1.0.0' }}
+      RELEASE_VERSION_CODE: ${{ github.event.inputs.version_code || '2' }}
+      RELEASE_VERSION_NAME: ${{ github.event.inputs.version_name || '1.0.1' }}
     timeout-minutes: 18
 
     steps:
